@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="res.groups" id="group_credit_limit">
+        <field name="name">Credit Limit</field>
+    </record>
+
+    <record model="res.groups" id="group_credit_limit_override">
+        <field name="name">Credit Limit overide</field>
+    </record>
+</odoo>
