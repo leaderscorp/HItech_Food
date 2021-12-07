@@ -5,8 +5,6 @@ from odoo.exceptions import UserError, ValidationError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
-    payment_term=fields.Html(string='Payment Term')
-    location_id=fields.Many2one('stock.location','Town')
     credit_limit = fields.Float(
         string='Credit Limit', related='partner_id.credit_limit',
         required=False)
@@ -23,13 +21,6 @@ class SaleOrder(models.Model):
     partners = fields.Many2many('res.partner')
 
     state = fields.Selection(selection_add=[('revise', 'Revised Limit'), ('sale',)])
-
-    @api.onchange('partner_id')
-    def OnchangePartner(self):
-        if self.partner_id:
-            self.warehouse_id=self.partner_id.warehouse_id.id
-            self.location_id=self.partner_id.location_id.id
-            self.payment_term=self.partner_id.payment_term
 
     def action_revise(self):
         for rec in self:
