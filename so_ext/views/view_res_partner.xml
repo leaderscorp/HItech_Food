@@ -8,21 +8,30 @@
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
 
+                <xpath expr="//field[@name='property_payment_term_id']" position="replace">
+                </xpath>
                 <xpath expr="//field[@name='vat']" position="after">
                     <field name="credit_limit" groups="so_ext.group_credit_limit"/>
                     <field name="total_credit_used"/>
+                    <field name="warehouse_id" string="Region"/>
+                    <field name="location_id" string="Town"/>
 <!--                    <field name="payment_term"/>-->
                 </xpath>
 
                    <xpath expr="//page[@name='internal_notes']" position="after">
                        <page name="attachment" string="Attachment">
                            <group>
-                               <field name="attachment_ids">
+                               <field name="attachment_ids" nolabel="1">
                                    <tree editable="bottom">
                                        <field name="datas" string="File"/>
                                        <field name="name"/>
                                    </tree>
                                </field>
+                           </group>
+                       </page>
+                       <page name="payment_term" string="Payment Terms">
+                           <group>
+                               <field name="payment_term" string="Payment Terms"/>
                            </group>
                        </page>
                 </xpath>
