@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit Form View to Modify it -->
+        <record id="view_order_form_inherit" model="ir.ui.view">
+            <field name="name">view_order_form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//header" position="inside">
+                    <button name="action_revise" type="object" string="Revise Credit Limit"
+                            attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent','cancel']), ('over_credit', '=', False)]}"/>
+                    <button name="action_confirm" id="action_confirm" string="Confirm" class="btn-primary" type="object"
+                            attrs="{'invisible': [('state', 'not in', ['revise'])]}"/>
+                    <button name="action_quotation_send" string="Send by Email" type="object" states="revise"
+                            class="btn-primary"/>
+                </xpath>
+
+                <xpath expr="//field[@name='state']" position="replace">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,revise,sale"/>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_id']" position="replace">
+                    <field name="partner_id" domain="[('id', 'in', partners)]"/>
+                </xpath>
+                <xpath expr="//field[@name='tag_ids']" position="after">
+                    <field name="warehouse_id" string="Region"/>
+                    <field name="location_id" string="Town"/>
+                </xpath>
+                <xpath expr="//field[@name='pricelist_id']" position="replace">
+                    <field name="pricelist_id" string="Channel"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="replace">
+                </xpath>
+                <xpath expr="//group[@name='sale_shipping']" position="after">
+                    <group name="Payment Terms">
+                        <field name="payment_term"/>
+                    </group>
+                </xpath>
+
+                <xpath expr="//field[@name='date_order']" position="after">
+                    <field name="credit_limit"/>
+                    <field name="partners" invisible="1"/>
+                    <field name="over_credit"/>
+                    <field name="override_credit_limit" groups="so_ext.group_credit_limit_override"/>
+                    <!--                    <field name="total_credit_used"/>-->
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>
