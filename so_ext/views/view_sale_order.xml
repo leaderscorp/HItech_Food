@@ -24,22 +24,7 @@
                 <xpath expr="//field[@name='partner_id']" position="replace">
                     <field name="partner_id" domain="[('id', 'in', partners)]"/>
                 </xpath>
-                <xpath expr="//field[@name='tag_ids']" position="after">
-                    <field name="warehouse_id" string="Region"/>
-                    <field name="location_id" string="Town"/>
-                </xpath>
-                <xpath expr="//field[@name='pricelist_id']" position="replace">
-                    <field name="pricelist_id" string="Channel"/>
-                </xpath>
-                <xpath expr="//field[@name='payment_term_id']" position="replace">
-                </xpath>
-                <xpath expr="//group[@name='sale_shipping']" position="after">
-                    <group name="Payment Terms">
-                        <field name="payment_term"/>
-                    </group>
-                </xpath>
-
-                <xpath expr="//field[@name='date_order']" position="after">
+                <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="credit_limit"/>
                     <field name="partners" invisible="1"/>
                     <field name="over_credit"/>
