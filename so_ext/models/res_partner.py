@@ -4,6 +4,10 @@ from odoo import models, fields, api
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    warehouse_id=fields.Many2one('stock.warehouse','Region')
+    location_id=fields.Many2one('stock.location','Town')
+    payment_term=fields.Html(string='Payment Term')
+
     def _compute_wl_credit(self):
         for rec in self:
             # Previous Receivable
