@@ -1,5 +1,67 @@
 <odoo>
   <data>
+        <record id="view_redistribution_tree" model="ir.ui.view">
+            <field name="name">view.redistribution</field>
+            <field name="model">redistribution.claim</field>
+            <field name="arch" type="xml">
+              <tree name="Claim">
+                    <field name="picking_id" string="Delivery Order"/>
+                      <field name="location_id" string="Town"/>
+                      <field name="name"/>
+                      <field name="date"/>
+                    <field name="state"/>
+              </tree>
+            </field>
+        </record>
+        <record id="view_redistribution_claim" model="ir.ui.view">
+            <field name="name">view_order_form</field>
+            <field name="model">redistribution.claim</field>
+            <field name="arch" type="xml">
+              <form name="Claim">
+                <header>
+                                        <button name="submit" type="object" string="Submit For Approval"
+                            attrs="{'invisible': [('state', 'not in', ['Draft'])]}"/>
+                                        <button name="approved" type="object" string="Approved"
+                            attrs="{'invisible': [('state', 'not in', ['Waiting For Approval'])]}"/>
+                    <field name="state" widget="statusbar"/>
+
+                </header>
+                <sheet>
+                  <group>
+                    <group>
+                    <field name="picking_id" string="Delivery Order"/>
+                      <field name="location_id" string="Town"/>
+                    </group>
+                    <group>
+                      <field name="name"/>
+                      <field name="date"/>
+                    </group>
+
+                  </group>
+                  <group name="Lines">
+                    <field name="line_ids" nolabel="1">
+                      <tree editable="bottom">
+                        <field name="type_id"/>
+                        <field name="amount"/>
+                        <field name="remarks"/>
+
+                      </tree>
+                    </field>
+
+                  </group>
+                </sheet>
+              </form>
+            </field>
+        </record>
+
+    <record model="ir.actions.act_window" id="action_claim">
+      <field name="name">Redistribution Claims</field>
+      <field name="res_model">redistribution.claim</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Redistribution Claim" id="menu_redistribution" parent="stock.menu_stock_warehouse_mgmt" action="action_claim"/>
+
     <!-- explicit list view definition -->
 <!--
     <record model="ir.ui.view" id="so_ext.list">
@@ -12,7 +74,7 @@
           <field name="value2"/>
         </tree>
       </field>
-    </record>
+    </record
 -->
 
     <!-- actions opening views on models -->
