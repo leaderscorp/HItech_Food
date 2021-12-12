@@ -46,7 +46,7 @@ class ResPartner(models.Model):
 
             # Compute credit limit
             rec.total_credit_used = credit + confirm_so_amount + account_move_draft
-
+            return rec.total_credit_used
     attachment_ids = fields.One2many(
         comodel_name='ir.attachment',
         inverse_name='res_partner_id',

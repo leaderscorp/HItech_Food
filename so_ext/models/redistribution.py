@@ -1,4 +1,5 @@
 from odoo import fields,models,api
+from datetime import datetime
 
 class ReDistribution(models.Model):
     _name='redistribution.claim'
@@ -20,7 +21,7 @@ class ReDistribution(models.Model):
         for line in self.line_ids:
             amount_total+=line.amount
         invoice=self.env['account.move'].create({'move_type':'out_refund','partner_id':self.picking_id.partner_id.id,'journal_id':self.env['account.journal'].search([('type','=','sale')],limit=1).id,
-                               })
+                              'invoice_date': datetime.now()})
         print(product_id.property_account_income_id.id)
         vals = [{
              'move_id':invoice.id,
@@ -67,15 +68,31 @@ class ReDistribution(models.Model):
 
         self.env['account.move.line'].create(vals)
 
+class InheritStockPickingReturn(models.TransientModel):
+    _inherit = 'stock.return.picking.line'
 
+    type_id=fields.Many2one('redistribution.type','Particular Type')
 
 class Redistributionlines(models.Model):
     _name='distribution.line'
 
+    product_id=fields.Many2one('product.product')
+    qty=fields.Float()
     claim_id=fields.Many2one('redistribution.claim')
     type_id=fields.Many2one('redistribution.type','Particular Type')
     amount=fields.Float('Amount')
     remarks=fields.Char('Remarks')
+
+class InheritReutnPickingFunction(models.TransientModel):
+    _inherit='stock.return.picking'
+
+    def create_returns(self):
+        rec=super(InheritReutnPickingFunction, self).create_returns()
+        claim_id=self.env['redistribution.claim'].create({'picking_id':self.picking_id.id,'date':datetime.now(),'location_id':self.picking_id.location_id.id,
+                                        })
+        for line in self.product_return_moves:
+            self.env['distribution.line'].create({'product_id':line.product_id.id,'qty':line.quantity,'type_id':line.type_id.id,'claim_id':claim_id.id})
+        return rec
 
 class RedistributionType(models.Model):
     _name='redistribution.type'

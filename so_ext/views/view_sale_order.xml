@@ -12,8 +12,12 @@
                     <button name="action_revise" type="object" string="Revise Credit Limit"
                             attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent','cancel']), ('over_credit', '=', False)]}"/>
                     <button name="action_confirm" id="action_confirm" string="Confirm" class="btn-primary" type="object"
-                            attrs="{'invisible': [('state', 'not in', ['revise'])]}"/>
+                            attrs="{'invisible': [('state', 'not in', ['Limit Enhanced'])]}"/>
                     <button name="action_quotation_send" string="Send by Email" type="object" states="revise"
+                            class="btn-primary"/>
+                    <button name="action_limit_approve" string="Limit Approved" type="object" states="revise"
+                            class="btn-primary"/>
+                    <button name="action_limit_enhanced" string="Limit Enhance" type="object" states="Limit Approved"
                             class="btn-primary"/>
                 </xpath>
 
@@ -21,9 +25,9 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,sent,revise,sale"/>
                 </xpath>
 
-                <xpath expr="//field[@name='partner_id']" position="replace">
-                    <field name="partner_id" domain="[('id', 'in', partners)]"/>
-                </xpath>
+<!--                <xpath expr="//field[@name='partner_id']" position="replace">-->
+<!--                    <field name="partner_id" domain="[('id', 'in', partners)]"/>-->
+<!--                </xpath>-->
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <field name="warehouse_id" string="Region"/>
                     <field name="location_id" string="Town"/>
@@ -41,6 +45,7 @@
 
                 <xpath expr="//field[@name='date_order']" position="after">
                     <field name="credit_limit"/>
+                    <field name="active_limit"/>
                     <field name="partners" invisible="1"/>
                     <field name="over_credit"/>
                     <field name="override_credit_limit" groups="so_ext.group_credit_limit_override"/>

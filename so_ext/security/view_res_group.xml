@@ -5,6 +5,10 @@
         <field name="name">Credit Limit</field>
     </record>
 
+     <record model="res.groups" id="group_credit_limit_approval">
+        <field name="name">Credit Limit Approval</field>
+    </record>
+
     <record model="res.groups" id="group_credit_limit_override">
         <field name="name">Credit Limit overide</field>
     </record>

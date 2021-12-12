@@ -1,6 +1,10 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
+class InheritSaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    action_confirmed=fields.Boolean()
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -22,7 +26,9 @@ class SaleOrder(models.Model):
     )
     partners = fields.Many2many('res.partner')
 
-    state = fields.Selection(selection_add=[('revise', 'Revised Limit'), ('sale',)])
+    state = fields.Selection(selection_add=[('revise', 'Revised Limit'),('Limit Approved', 'Limit Approved'),('Limit Enhanced', 'Limit Enhanced'), ('sale',)])
+    active_limit=fields.Float(string='Active Limit')
+
 
     @api.onchange('partner_id')
     def OnchangePartner(self):
@@ -30,23 +36,48 @@ class SaleOrder(models.Model):
             self.warehouse_id=self.partner_id.warehouse_id.id
             self.location_id=self.partner_id.location_id.id
             self.payment_term=self.partner_id.payment_term
+            self.active_limit=self.partner_id._compute_wl_credit()
 
     def action_revise(self):
         for rec in self:
             rec.state = 'revise'
+        ctx = {}
+        email_list = [user.email for user in self.env['res.users'].sudo().search([('company_ids', 'in', self.company_id.ids)]) if user.has_group('so_ext.group_credit_limit')]
+        if email_list:
+            ctx['credit_limit_users'] = ','.join([email for email in email_list if email])
 
-    @api.onchange('pricelist_id')
-    def pricelist_id_onchange_method(self):
+            template = self.env.ref('so_ext.credit_limit_alert_email_template')
+            template.with_context(ctx).sudo().send_mail(self.id, force_send=True, raise_exception=False)
+
+    def action_limit_approve(self):
         for rec in self:
-            partner_list = []
-            if rec.pricelist_id:
-                rec.partners = False
-                print("PArtner: ", rec.partners)
-                print("PArtner List: ", partner_list)
-                partner_list.append(rec.pricelist_id.item_ids.mapped('partner_id').ids)
-                partner_list = partner_list[0]
-                rec.partners = partner_list
-                partner_list = []
+            rec.state = 'Limit Approved'
+        ctx = {}
+        email_list = [user.email for user in self.env['res.users'].sudo().search([('company_ids', 'in', self.company_id.ids)]) if user.has_group('so_ext.group_credit_limit_approval')]
+        if email_list:
+            ctx['credit_limit_approved'] = ','.join([email for email in email_list if email])
+
+            template = self.env.ref('so_ext.credit_limit_approved_email_template')
+            template.with_context(ctx).sudo().send_mail(self.id, force_send=True, raise_exception=False)
+
+    def action_limit_enhanced(self):
+        for rec in self:
+            rec.state = 'Limit Enhanced'
+        template = self.env.ref('so_ext.limit_enhance_email_template')
+        template.sudo().send_mail(self.id, force_send=True, raise_exception=False)
+
+    # @api.onchange('pricelist_id')
+    # def pricelist_id_onchange_method(self):
+    #     for rec in self:
+    #         partner_list = []
+    #         if rec.pricelist_id:
+    #             rec.partners = False
+    #             print("PArtner: ", rec.partners)
+    #             print("PArtner List: ", partner_list)
+    #             partner_list.append(rec.pricelist_id.item_ids.mapped('partner_id').ids)
+    #             partner_list = partner_list[0]
+    #             rec.partners = partner_list
+    #             partner_list = []
 
     def check_partner_credit_limit(self):
         if not self._context.get('website_order_tx', False):
@@ -73,6 +104,8 @@ class SaleOrder(models.Model):
                             sale.invoice_ids.filtered(lambda x: x.state != 'cancel').mapped('amount_total_signed'))
                         actual_credit_used = sale.amount_total - inv_amount + partner.total_credit_used
                         if not sale.override_credit_limit and actual_credit_used > partner.credit_limit:
+
+
                             raise UserError(
                                 _("Over Credit Limit!\n"
                                   "Credit Limit: {0}{1:.2f}\n"
@@ -110,4 +143,9 @@ class SaleOrder(models.Model):
                     'target': 'new',
                     'context': {'default_message': e.name}
                 }
+
+
+
+
+
         return super(SaleOrder, self).action_confirm()
