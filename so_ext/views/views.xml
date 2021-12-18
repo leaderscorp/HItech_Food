@@ -1,5 +1,108 @@
 <odoo>
   <data>
+
+       <record id="view_soda_line_tree" model="ir.ui.view">
+            <field name="name">product.soda</field>
+            <field name="model">product.soda</field>
+            <field name="arch" type="xml">
+              <tree name="Product Soda">
+                  <field name="partner_id"/>
+                  <field name="bundle_id"/>
+                  <field name="shipping_charges"/>
+                  <field name="packing_charges"/>
+              </tree>
+            </field>
+       </record>
+        <record id="view_product_soda_form" model="ir.ui.view">
+            <field name="name">product.soda</field>
+            <field name="model">product.soda</field>
+            <field name="arch" type="xml">
+                <form name="Product Soda">
+                    <header>
+                        <button name="SetConfirmed" string="Confirm" type="object" attrs="{'invisible': [('state', 'not in', ['Draft'])]}"/>
+                        <button name="CreateSO" string="Create Sale Order" type="object" attrs="{'invisible': [('state', 'not in', ['Confirmed'])]}"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                  <sheet>
+                  <group>
+                      <group>
+                  <field name="partner_id"/>
+                  <field name="shipping_charges"/>
+
+                    </group>
+                      <group>
+                  <field name="bundle_id"/>
+                  <field name="packing_charges"/>
+
+                      </group>
+                  </group>
+                  <group>
+                      <field name="line_ids">
+                          <tree editable="bottom">
+                              <field name="product_id"/>
+                              <field name="qty"/>
+                              <field name="net_amount"/>
+                              <field name="market_value"/>
+                          </tree>
+                      </field>
+                  </group>
+                  </sheet>
+              </form>
+            </field>
+        </record>
+
+    <record model="ir.actions.act_window" id="action_product_soda">
+      <field name="name">Product Soda</field>
+      <field name="res_model">product.soda</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Product Soda" id="menu_product_soda" parent="sale.sale_order_menu" action="action_product_soda"/>
+
+
+
+       <record id="view_product_bundle_tree" model="ir.ui.view">
+            <field name="name">product.bundle</field>
+            <field name="model">product.bundle</field>
+            <field name="arch" type="xml">
+              <tree name="Product Bundle">
+                  <field name="name"/>
+              </tree>
+            </field>
+       </record>
+        <record id="view_product_bundle_form" model="ir.ui.view">
+            <field name="name">product.bundle</field>
+            <field name="model">product.bundle</field>
+            <field name="arch" type="xml">
+              <form name="Product Bundle">
+                  <sheet>
+                  <group>
+                      <group>
+                  <field name="name" string="Name"/>
+                    </group>
+                  </group>
+                  <group>
+                      <field name="product_ids">
+                          <tree editable="bottom">
+                              <field name="product_id"/>
+                              <field name="unit_price"/>
+                          </tree>
+                      </field>
+                  </group>
+                  </sheet>
+              </form>
+            </field>
+        </record>
+
+    <record model="ir.actions.act_window" id="action_product_bundle">
+      <field name="name">Product Bundle</field>
+      <field name="res_model">product.bundle</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem name="Product Bundle" id="menu_product_bundle" parent="sale.sale_order_menu" action="action_product_bundle"/>
+
+
         <record id="view_redistribution_tree" model="ir.ui.view">
             <field name="name">view.redistribution</field>
             <field name="model">redistribution.claim</field>
