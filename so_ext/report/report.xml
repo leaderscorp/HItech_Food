@@ -12,7 +12,6 @@
             <t t-call="web.external_layout">
                 <t t-foreach="docs" t-as="s">
                     <div class="page">
-                        <h3 style="text-align:center">Redistribution Claim</h3>
                         <table width="100%">
                             <tr>
                                 <td width="40%">

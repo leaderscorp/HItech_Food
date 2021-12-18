@@ -15,10 +15,7 @@
                     <field name="total_credit_used"/>
                     <field name="warehouse_id" string="Region"/>
                     <field name="location_id" string="Town"/>
-                    <field name="shipping_charges"/>
-                    <field name="packing_charges"/>
-
-                    <!--                    <field name="payment_term"/>-->
+<!--                    <field name="payment_term"/>-->
                 </xpath>
 
                    <xpath expr="//page[@name='internal_notes']" position="after">
