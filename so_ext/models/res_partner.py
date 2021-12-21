@@ -7,6 +7,7 @@ class ResPartner(models.Model):
     warehouse_id=fields.Many2one('stock.warehouse','Region')
     location_id=fields.Many2one('stock.location','Town')
     payment_term=fields.Html(string='Payment Term')
+    delivery_terms=fields.Html('Delivery Terms')
 
     def _compute_wl_credit(self):
         for rec in self:

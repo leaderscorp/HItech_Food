@@ -28,21 +28,26 @@
                       <group>
                   <field name="partner_id"/>
                   <field name="shipping_charges"/>
-
                     </group>
                       <group>
-                  <field name="bundle_id"/>
+                  <field name="bundle_ids" string="Items" widget="many2many_tags"/>
                   <field name="packing_charges"/>
 
                       </group>
                   </group>
+                      <group>
+                          <field name="delivery_terms" readonly="1" force_save="1"/>
+                      </group>
                   <group>
                       <field name="line_ids">
-                          <tree editable="bottom">
+                          <tree editable="bottom" create="0">
                               <field name="product_id"/>
                               <field name="qty"/>
-                              <field name="net_amount"/>
+                              <field name="uom_id" readonly="1" force_save="1"/>
+                              <field name="unit_price"/>
                               <field name="market_value"/>
+                              <field name="net_amount"/>
+                              <field name="unit_so" readonly="1" force_save="1"/>
                           </tree>
                       </field>
                   </group>
@@ -85,7 +90,7 @@
                       <field name="product_ids">
                           <tree editable="bottom">
                               <field name="product_id"/>
-                              <field name="unit_price"/>
+                              <field name="unit_price" string="Soda/Mount"/>
                           </tree>
                       </field>
                   </group>
@@ -167,7 +172,17 @@
 
     <menuitem name="Redistribution Claim" id="menu_redistribution" parent="stock.menu_stock_warehouse_mgmt" action="action_claim"/>
 
+              <record id="view_account_tax_inherit" model="ir.ui.view">
+            <field name="name">view_account_tax_inherit</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
 
+                <xpath expr="//field[@name='amount']" position="after">
+                    <field name="soda_tax" string="Soda Tax"/>
+                </xpath>
+            </field>
+              </record>
               <record id="view_stock_return" model="ir.ui.view">
             <field name="name">view_partner_form</field>
             <field name="model">stock.return.picking</field>
