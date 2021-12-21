@@ -31,6 +31,7 @@
         'data/limit_approved_email_template.xml',
         'data/limit_enhance_email_template.xml',
         'report/report.xml',
+
         'views/views.xml',
         'views/view_res_partner.xml',
         'views/view_sale_order.xml',

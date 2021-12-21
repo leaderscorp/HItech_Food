@@ -10,12 +10,18 @@
 
                 <xpath expr="//field[@name='property_payment_term_id']" position="replace">
                 </xpath>
+                <xpath expr="//field[@name='property_product_pricelist']" position="replace">
+                    <field name="property_product_pricelist" string="Channel"/>
+                </xpath>
                 <xpath expr="//field[@name='vat']" position="after">
                     <field name="credit_limit" groups="so_ext.group_credit_limit"/>
                     <field name="total_credit_used"/>
                     <field name="warehouse_id" string="Region"/>
                     <field name="location_id" string="Town"/>
-<!--                    <field name="payment_term"/>-->
+                    <field name="shipping_charges"/>
+                    <field name="packing_charges"/>
+
+                    <!--                    <field name="payment_term"/>-->
                 </xpath>
 
                    <xpath expr="//page[@name='internal_notes']" position="after">
@@ -32,6 +38,11 @@
                        <page name="payment_term" string="Payment Terms">
                            <group>
                                <field name="payment_term" string="Payment Terms"/>
+                           </group>
+                       </page>
+                       <page name="delivery_term" string="Delivery Terms">
+                           <group>
+                               <field name="delivery_terms" string="Delivery Terms"/>
                            </group>
                        </page>
                 </xpath>

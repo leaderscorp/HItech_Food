@@ -1,6 +1,12 @@
 from odoo import fields,models,api
 from datetime import datetime
 
+
+class InheritStockPicking(models.Model):
+    _inherit='stock.picking'
+
+    freight_rate=fields.Float(string='Freight Rate')
+
 class ReDistribution(models.Model):
     _name='redistribution.claim'
 

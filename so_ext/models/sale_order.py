@@ -5,10 +5,24 @@ class InheritSaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     action_confirmed=fields.Boolean()
+    dis_amount=fields.Float(string='Discount')
+
+    @api.onchange('dis_amount')
+    def discount_per(self):
+        for line in self:
+            line.discount = 0
+            if line.price_unit>0 and line.product_uom_qty>0 and line.dis_amount>0:
+                line.discount=(line.dis_amount/(line.price_unit*line.product_uom_qty))*100
+
+    def _action_launch_stock_rule(self):
+        if self.action_confirmed:
+            self.order_id.do_created=True
+            return super(InheritSaleOrderLine, self)._action_launch_stock_rule()
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    do_created=fields.Boolean()
     payment_term=fields.Html(string='Payment Term')
     location_id=fields.Many2one('stock.location','Town')
     credit_limit = fields.Float(
@@ -29,6 +43,8 @@ class SaleOrder(models.Model):
     state = fields.Selection(selection_add=[('revise', 'Revised Limit'),('Limit Approved', 'Limit Approved'),('Limit Enhanced', 'Limit Enhanced'), ('sale',)])
     active_limit=fields.Float(string='Active Limit')
 
+    def create_DO(self):
+        self.order_line._action_launch_stock_rule()
 
     @api.onchange('partner_id')
     def OnchangePartner(self):
@@ -36,7 +52,7 @@ class SaleOrder(models.Model):
             self.warehouse_id=self.partner_id.warehouse_id.id
             self.location_id=self.partner_id.location_id.id
             self.payment_term=self.partner_id.payment_term
-            self.active_limit=self.partner_id._compute_wl_credit()
+            self.active_limit=self.credit_limit-self.partner_id._compute_wl_credit()
 
     def action_revise(self):
         for rec in self:
@@ -104,8 +120,6 @@ class SaleOrder(models.Model):
                             sale.invoice_ids.filtered(lambda x: x.state != 'cancel').mapped('amount_total_signed'))
                         actual_credit_used = sale.amount_total - inv_amount + partner.total_credit_used
                         if not sale.override_credit_limit and actual_credit_used > partner.credit_limit:
-
-
                             raise UserError(
                                 _("Over Credit Limit!\n"
                                   "Credit Limit: {0}{1:.2f}\n"
@@ -144,8 +158,7 @@ class SaleOrder(models.Model):
                     'context': {'default_message': e.name}
                 }
 
-
-
-
-
-        return super(SaleOrder, self).action_confirm()
+        rec=super(SaleOrder, self).action_confirm()
+        for line in self.order_line:
+            line.action_confirmed=True
+        return rec

@@ -2,6 +2,19 @@
 <odoo>
     <data>
         <!-- Inherit Form View to Modify it -->
+        <record id="view_stock_picking_form_inherit" model="ir.ui.view">
+            <field name="name">view_stock_picking_form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="freight_rate"/>
+                </xpath>
+
+
+            </field>
+        </record>
+
         <record id="view_order_form_inherit" model="ir.ui.view">
             <field name="name">view_order_form</field>
             <field name="model">sale.order</field>
@@ -15,10 +28,15 @@
                             attrs="{'invisible': [('state', 'not in', ['Limit Enhanced'])]}"/>
                     <button name="action_quotation_send" string="Send by Email" type="object" states="revise"
                             class="btn-primary"/>
-                    <button name="action_limit_approve" string="Limit Approved" type="object" states="revise"
+                    <button name="action_limit_approve" string="Limit Approved" type="object" states="revise" groups="so_ext.group_credit_limit"
                             class="btn-primary"/>
                     <button name="action_limit_enhanced" string="Limit Enhance" type="object" states="Limit Approved"
                             class="btn-primary"/>
+                    <field name="do_created" invisible="1"/>
+                    <button name="create_DO" string="Create Delivery Order" type="object" groups="stock.group_stock_manager,stock.group_stock_user"
+                            class="btn-primary"
+                    attrs="{'invisible':['|',('do_created', '=', False),('state','!=','sale')]}"
+                    />
                 </xpath>
 
                 <xpath expr="//field[@name='state']" position="replace">
@@ -31,9 +49,16 @@
                 <xpath expr="//field[@name='tag_ids']" position="after">
                     <field name="warehouse_id" string="Region"/>
                     <field name="location_id" string="Town"/>
+                    <field name="soda_id" readonly="1" force_save="1"/>
+
                 </xpath>
                 <xpath expr="//field[@name='pricelist_id']" position="replace">
                     <field name="pricelist_id" string="Channel"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="replace">
+                    <field name="dis_amount" string="Dis"/>
+                    <field name="discount" force_save="1" readonly="1"/>
+
                 </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="replace">
                 </xpath>
@@ -43,9 +68,12 @@
                     </group>
                 </xpath>
 
+                <xpath expr="//field[@name='pricelist_id']" position="replace">
+                                <field name="pricelist_id" options="{'no_open':True,'no_create': True}" string="Channel"/>
+                </xpath>
                 <xpath expr="//field[@name='date_order']" position="after">
                     <field name="credit_limit"/>
-                    <field name="active_limit"/>
+                    <field name="active_limit" readonly="1" force_save="1"/>
                     <field name="partners" invisible="1"/>
                     <field name="over_credit"/>
                     <field name="override_credit_limit" groups="so_ext.group_credit_limit_override"/>
