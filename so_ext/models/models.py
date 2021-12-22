@@ -24,7 +24,7 @@ class ProductSoda(models.Model):
     bundle_id=fields.Many2one('product.bundle')
     bundle_ids=fields.Many2many('product.bundle',string='Items')
     shipping_charges=fields.Float(string='Shipping Charges',readonly=1,force_save=1)
-    delivery_terms=fields.Float(string='Delivery Terms',readonly=1,force_save=1)
+    delivery_terms=fields.Html(string='Delivery Terms',readonly=1,force_save=1)
     packing_charges=fields.Float(string='Packing Charges',readonly=1,force_save=1)
     state=fields.Selection([('Draft','Draft'),('Confirmed','Confirmed'),('Done','Done')],default='Draft')
     line_ids=fields.One2many('soda.line','soda_id')
