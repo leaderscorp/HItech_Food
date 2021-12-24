@@ -37,7 +37,6 @@ class ProductSoda(models.Model):
         vals=[]
         if self.bundle_ids:
             self.line_ids=False
-            print(self.bundle_ids)
             for bundle in self.bundle_ids:
                 for line in bundle.product_ids:
                     vals.append((0,0,{'product_id':line.product_id.id,'unit_price':line.unit_price,'qty':line.qty,'uom_id':line.uom_id.id}))
@@ -49,7 +48,12 @@ class ProductSoda(models.Model):
         SO=self.env['sale.order'].create({'partner_id':self.partner_id.id,'pricelist_id':self.partner_id.property_product_pricelist.id,'soda_id':self.id})
         tax=self.env['account.tax'].search([('soda_tax','=',True)],limit=1)
         for line in self.line_ids:
-            self.env['sale.order.line'].create({'order_id':SO.id,'product_id':line.product_id.id,'product_uom':line.uom_id.id,'price_unit':line.unit_so,'product_uom_qty':line.qty,'tax_id':[(4,tax.id)]})
+
+            self.env['sale.order.line'].create({'order_id':SO.id,'product_id':line.product_id.id,'product_uom':line.uom_id.id,'price_unit':line.unit_so,'net_amount':line.net_amount,'product_uom_qty':line.qty})
+        milling=self.env['product.product'].search([('name', '=', 'Milling Cost')], limit=1)
+        packaging=self.env['product.product'].search([('name', '=', 'Packaging Cost')], limit=1)
+        self.env['sale.order.line'].create({'order_id':SO.id,'product_id':milling.id,'product_uom':milling.uom_id.id,'price_unit':self.partner_id.shipping_charges,'product_uom_qty':1})
+        self.env['sale.order.line'].create({'order_id':SO.id,'product_id':packaging.id,'product_uom':packaging.uom_id.id,'price_unit':self.partner_id.packing_charges,'product_uom_qty':1})
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',

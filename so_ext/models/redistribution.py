@@ -25,9 +25,9 @@ class InheritStockPicking(models.Model):
 
     freight_rate=fields.Float(string='Freight Rate')
     gate_pass_date=fields.Date(string='Gate Pass Date')
-    gate_pass_no=fields.Date(string='Gate Pass#')
-    bilty_no=fields.Date(string='Bilty#')
-    vehicle_no=fields.Date(string='Vehicle#')
+    gate_pass_no=fields.Char(string='Gate Pass#')
+    bilty_no=fields.Char(string='Bilty#')
+    vehicle_no=fields.Char(string='Vehicle#')
     is_from_soda=fields.Boolean(compute='CheckSodaDetail')
     ship_to=fields.Many2one('res.partner')
 

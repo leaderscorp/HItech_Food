@@ -81,6 +81,7 @@
                     <field name="dis_amount" string="Dis"/>
                     <field name="discount" force_save="1" readonly="1"/>
                     <field name="total_weight"/>
+                    <field name="net_amount"/>
 
                 </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="replace">

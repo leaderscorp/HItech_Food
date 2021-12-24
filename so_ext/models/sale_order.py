@@ -7,6 +7,7 @@ class InheritSaleOrderLine(models.Model):
     action_confirmed=fields.Boolean()
     dis_amount=fields.Float(string='Discount')
     total_weight=fields.Float(string='Total Weight')
+    net_amount=fields.Float(string='Net Amount')
 
     @api.onchange('dis_amount')
     def discount_per(self):
@@ -16,9 +17,10 @@ class InheritSaleOrderLine(models.Model):
                 line.discount=(line.dis_amount/(line.price_unit*line.product_uom_qty))*100
 
     def _action_launch_stock_rule(self):
-        if self.action_confirmed:
-            self.order_id.do_created=True
-            return super(InheritSaleOrderLine, self)._action_launch_stock_rule()
+        for rec in self:
+            if rec.action_confirmed:
+                rec.order_id.do_created=True
+                return super(InheritSaleOrderLine, self)._action_launch_stock_rule()
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
