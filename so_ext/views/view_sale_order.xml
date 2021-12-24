@@ -57,7 +57,7 @@
                     <field name="do_created" invisible="1"/>
                     <button name="create_DO" string="Create Delivery Order" type="object" groups="stock.group_stock_manager,stock.group_stock_user"
                             class="btn-primary"
-                    attrs="{'invisible':['|',('do_created', '=', False),('state','!=','sale')]}"
+                    attrs="{'invisible':['|',('do_created', '!=', False),('state','!=','sale')]}"
                     />
                 </xpath>
 
