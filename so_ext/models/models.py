@@ -49,7 +49,7 @@ class ProductSoda(models.Model):
         SO=self.env['sale.order'].create({'partner_id':self.partner_id.id,'pricelist_id':self.partner_id.property_product_pricelist.id,'soda_id':self.id})
         tax=self.env['account.tax'].search([('soda_tax','=',True)],limit=1)
         for line in self.line_ids:
-            self.env['sale.order.line'].create({'order_id':SO.id,'product_id':line.product_id.id,'product_uom':line.uom_id.id,'price_unit':line.unit_so,'product_uom_qty':line.qty,'tax_id':(4,tax.id)})
+            self.env['sale.order.line'].create({'order_id':SO.id,'product_id':line.product_id.id,'product_uom':line.uom_id.id,'price_unit':line.unit_so,'product_uom_qty':line.qty,'tax_id':[(4,tax.id)]})
         return {
             'type': 'ir.actions.act_window',
             'view_type': 'form',
@@ -88,7 +88,7 @@ class SodeLines(models.Model):
     def GetSoUnit(self):
         for line in self:
             line.unit_so=(line.net_amount-(line.net_amount*0.17))/line.qty
-            line.difference=line.market_value-line.net_amount
+            line.difference=line.market_value-line.unit_price
 
 class InheritPartner(models.Model):
     _inherit='res.partner'
