@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_credit_limit_warning,partner.credit.limit.warning,model_partner_credit_limit_warning,base.group_user,1,1,1,1
+access_redistribution_type,redistribution.type,model_redistribution_type,base.group_user,1,1,1,1
+access_redistribution_claim,redistribution.claim,model_redistribution_claim,base.group_user,1,1,1,1
+access_distribution_line,distribution.line,model_distribution_line,base.group_user,1,1,1,1
+access_product_bundle,product.bundle,model_product_bundle,base.group_user,1,1,1,1
+access_product_line,product.line,model_product_line,base.group_user,1,1,1,1
+access_product_soda,product_soda,model_product_soda,base.group_user,1,1,1,1
+access_soda_line,soda_line,model_soda_line,base.group_user,1,1,1,1
