@@ -11,7 +11,6 @@ class InheritStockMove(models.Model):
     _inherit='stock.move'
 
     weight=fields.Float(string='Weight')
-    ship_to=fields.Many2one('res.partner')
 
     @api.onchange('quantity_done')
     def GetWeightDetail(self):
@@ -30,6 +29,7 @@ class InheritStockPicking(models.Model):
     bilty_no=fields.Date(string='Bilty#')
     vehicle_no=fields.Date(string='Vehicle#')
     is_from_soda=fields.Boolean(compute='CheckSodaDetail')
+    ship_to=fields.Many2one('res.partner')
 
     def CheckSodaDetail(self):
         self.is_from_soda=False
