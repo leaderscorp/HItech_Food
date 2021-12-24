@@ -25,9 +25,12 @@ class ProductSoda(models.Model):
     bundle_ids=fields.Many2many('product.bundle',string='Items')
     shipping_charges=fields.Float(string='Shipping Charges',readonly=1,force_save=1)
     delivery_terms=fields.Html(string='Delivery Terms',readonly=1,force_save=1)
+    delivery_terms_1=fields.Html(string='Delivery Terms',readonly=1,force_save=1)
     packing_charges=fields.Float(string='Packing Charges',readonly=1,force_save=1)
     state=fields.Selection([('Draft','Draft'),('Confirmed','Confirmed'),('Done','Done')],default='Draft')
     line_ids=fields.One2many('soda.line','soda_id')
+    reference=fields.Char(string='Reference')
+    delivery_date=fields.Date(string='Delivery Date')
 
     @api.onchange('bundle_ids')
     def OnchangeBudle(self):
@@ -37,7 +40,7 @@ class ProductSoda(models.Model):
             print(self.bundle_ids)
             for bundle in self.bundle_ids:
                 for line in bundle.product_ids:
-                    vals.append((0,0,{'product_id':line.product_id.id,'unit_price':line.unit_price,'qty':line.qty}))
+                    vals.append((0,0,{'product_id':line.product_id.id,'unit_price':line.unit_price,'qty':line.qty,'uom_id':line.uom_id.id}))
             self.line_ids=vals
 
     def CreateSO(self):
@@ -66,6 +69,7 @@ class ProductSoda(models.Model):
             self.shipping_charges=self.partner_id.shipping_charges
             self.packing_charges=self.partner_id.packing_charges
             self.delivery_terms=self.partner_id.delivery_terms
+            self.delivery_terms_1=self.partner_id.delivery_terms
 
 class SodeLines(models.Model):
     _name='soda.line'
@@ -78,11 +82,13 @@ class SodeLines(models.Model):
     market_value=fields.Float('Market Rate')
     uom_id=fields.Many2one('uom.uom')
     unit_so=fields.Float(string='Per Unit Amount')
+    difference=fields.Float()
 
     @api.onchange('net_amount')
     def GetSoUnit(self):
         for line in self:
             line.unit_so=(line.net_amount-(line.net_amount*0.17))/line.qty
+            line.difference=line.market_value-line.net_amount
 
 class InheritPartner(models.Model):
     _inherit='res.partner'

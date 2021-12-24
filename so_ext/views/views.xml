@@ -28,15 +28,16 @@
                       <group>
                   <field name="partner_id"/>
                   <field name="shipping_charges"/>
+                    <field name="reference"/>
                     </group>
                       <group>
                   <field name="bundle_ids" string="Items" widget="many2many_tags"/>
                   <field name="packing_charges"/>
-
+                    <field name="delivery_date"/>
                       </group>
                   </group>
                       <group>
-                          <field name="delivery_terms" readonly="1" force_save="1"/>
+                          <field name="delivery_terms_1" readonly="1" force_save="1"/>
                       </group>
                   <group>
                       <field name="line_ids">
@@ -48,6 +49,7 @@
                               <field name="market_value"/>
                               <field name="net_amount"/>
                               <field name="unit_so" readonly="1" force_save="1"/>
+                              <field name="difference" string="+/-"/>
                           </tree>
                       </field>
                   </group>
@@ -90,6 +92,7 @@
                       <field name="product_ids">
                           <tree editable="bottom">
                               <field name="product_id"/>
+                              <field name="uom_id"/>
                               <field name="unit_price" string="Soda/Mount"/>
                           </tree>
                       </field>

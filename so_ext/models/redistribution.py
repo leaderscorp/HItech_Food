@@ -2,10 +2,41 @@ from odoo import fields,models,api
 from datetime import datetime
 
 
+class InheritAccountMove(models.Model):
+    _inherit='account.move'
+
+    bill_to=fields.Many2one('res.partner')
+
+class InheritStockMove(models.Model):
+    _inherit='stock.move'
+
+    weight=fields.Float(string='Weight')
+    ship_to=fields.Many2one('res.partner')
+
+    @api.onchange('quantity_done')
+    def GetWeightDetail(self):
+        for rec in self:
+            sale=self.env['sale.order'].search([('name', '=', self.picking_id.origin)])
+            rec.quantity_done=0
+            for line in sale.order_line.filtered(lambda x:x.product_id==rec.product_id):
+                rec.weight=(line.total_weight/line.product_uom_qty)*rec.quantity_done
+
 class InheritStockPicking(models.Model):
     _inherit='stock.picking'
 
     freight_rate=fields.Float(string='Freight Rate')
+    gate_pass_date=fields.Date(string='Gate Pass Date')
+    gate_pass_no=fields.Date(string='Gate Pass#')
+    bilty_no=fields.Date(string='Bilty#')
+    vehicle_no=fields.Date(string='Vehicle#')
+    is_from_soda=fields.Boolean(compute='CheckSodaDetail')
+
+    def CheckSodaDetail(self):
+        self.is_from_soda=False
+        for sale in self.env['sale.order'].search([('name','=',self.origin)]):
+            if sale.soda_id:
+                self.is_from_soda=True
+
 
 class ReDistribution(models.Model):
     _name='redistribution.claim'

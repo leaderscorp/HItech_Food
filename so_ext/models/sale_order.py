@@ -6,6 +6,7 @@ class InheritSaleOrderLine(models.Model):
 
     action_confirmed=fields.Boolean()
     dis_amount=fields.Float(string='Discount')
+    total_weight=fields.Float(string='Total Weight')
 
     @api.onchange('dis_amount')
     def discount_per(self):
@@ -162,3 +163,4 @@ class SaleOrder(models.Model):
         for line in self.order_line:
             line.action_confirmed=True
         return rec
+

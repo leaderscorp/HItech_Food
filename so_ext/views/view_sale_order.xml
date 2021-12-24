@@ -2,13 +2,35 @@
 <odoo>
     <data>
         <!-- Inherit Form View to Modify it -->
+
+        <record id="view_account_move_form_inherit" model="ir.ui.view">
+            <field name="name">view_account.move_form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="bill_to"/>
+                </xpath>
+
+            </field>
+        </record>
+
         <record id="view_stock_picking_form_inherit" model="ir.ui.view">
             <field name="name">view_stock_picking_form</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='quantity_done']" position="after">
+                    <field name="weight"/>
+                </xpath>
                 <xpath expr="//field[@name='origin']" position="after">
+                    <field name="ship_to" string="Ship To"/>
+                    <field name="is_from_soda" invisible="1"/>
                     <field name="freight_rate"/>
+                    <field name="gate_pass_date" attrs="{'invisible': [('is_from_soda', '=',False)]}"/>
+                    <field name="gate_pass_no" attrs="{'invisible': [('is_from_soda', '=',False)]}"/>
+                    <field name="bilty_no" attrs="{'invisible': [('is_from_soda', '=',False)]}"/>
+                    <field name="vehicle_no" attrs="{'invisible': [('is_from_soda', '=',False)]}"/>
                 </xpath>
 
 
@@ -58,6 +80,7 @@
                 <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="replace">
                     <field name="dis_amount" string="Dis"/>
                     <field name="discount" force_save="1" readonly="1"/>
+                    <field name="total_weight"/>
 
                 </xpath>
                 <xpath expr="//field[@name='payment_term_id']" position="replace">
