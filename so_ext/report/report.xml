@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report id="action_report_redistribution"
+            string="Redistribution Claim"
+            model="redistribution.claim"
+            report_type="qweb-pdf"
+            name="so_ext.redistribution_template"
+            file="so_ext.redistribution_template"/>
+
+    <template id="redistribution_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="s">
+                    <div class="page">
+                        <h3 style="text-align:center">Redistribution Claim</h3>
+                        <table width="100%">
+                            <tr>
+                                <td width="40%">
+                                    <tr>
+                                        <td width="50%" style="text-align:left">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td><span style="font-size:18px;">Delivery Order:  </span><span style="font-size:16px;" t-field="s.picking_id.name"/></td>
+                                                </tr>
+
+                                            </table>
+                                        </td>
+                                        <td width="50%" style="text-align:left">
+                                             <table>
+                                                <tr>
+                                                    <td><span style="font-size:18px;">Town:  </span><span style="font-size:16px;" t-field="s.location_id.name"/></td>
+                                                </tr>
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </td>
+                                <td width="20%">
+                                </td>
+                                <td width="40%">
+                                    <tr>
+                                        <td width="50%" style="text-align:left">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td><span style="font-size:18px;">Name:  </span><span style="font-size:16px;" t-field="s.name"/></td>
+                                                </tr>
+
+                                            </table>
+                                        </td>
+                                        <td width="50%" style="text-align:left">
+                                             <table>
+                                                <tr>
+                                                   <td><span style="font-size:18px;">Date:  </span><span style="font-size:16px;" t-field="s.date"/></td>
+                                                </tr>
+
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <table class="table table-bordered" style="margin-top:20px;">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">
+                                        <b>Product</b>
+                                    </th>
+                                    <th class="text-center">
+                                        <b>Quantity</b>
+                                    </th>
+                                    <th class="text-center">
+                                        <b>Particular Type</b>
+                                    </th>
+                                    <th class="text-center">
+                                        <b>Amount</b>
+                                    </th>
+                                    <th class="text-center">
+                                        <b>Remarks</b>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="s.line_ids" t-as="p">
+                                    <tr>
+                                        <td class="text-left">
+                                            <t t-esc="p.product_id.name"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <t t-esc="p.qty"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <t t-esc="p.type_id.name"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-esc="'{0:,.2f}'.format(p.amount)" />
+                                        </td>
+                                         <td class="text-center">
+                                            <t t-esc="p.remarks"/>
+                                        </td>
+                                    </tr>
+                                </t>
+
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
