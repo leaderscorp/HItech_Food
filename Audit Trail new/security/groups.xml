@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="group_pwc_head" model="res.groups">
+        <field name="name">AUDIT Trail Access</field>
+        <field name="users" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+</odoo>
